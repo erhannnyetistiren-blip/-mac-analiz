@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Erhan · Maç Analiz Merkezi</title>
+  <style>
+    :root {
+      --bg: #090e17;
+      --card-bg: #131b26;
+      --card-border: #1f2b3b;
+      --text: #e6edf3;
+      --muted: #8395a7;
+      --accent: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.15);
+      --red: #ef4444;
+      --yellow: #f59e0b;
+      --blue: #3b82f6;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      padding: 16px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      line-height: 1.45;
+    }
+    header {
+      padding: 12px 0 16px 0;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-title { font-size: 18px; font-weight: 800; letter-spacing: -0.4px; color: #fff; }
+    .brand-sub { font-size: 11px; color: var(--muted); font-weight: 500; }
+    .bankroll-chip {
+      background: #064e3b;
+      color: #6ee7b7;
+      border: 1px solid #059669;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .bankroll-chip::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      background: #34d399;
+      border-radius: 50%;
+    }
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 16px 0;
+    }
+    .kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 8px;
+      text-align: center;
+    }
+    .kpi-label { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 600; }
+    .kpi-value { font-size: 15px; font-weight: 800; color: #fff; margin-top: 3px; }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 20px 0 10px 0;
+    }
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .section-tag { font-size: 11px; color: var(--accent); font-weight: 600; }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .card-highlight {
+      border-color: #059669;
+      background: linear-gradient(180deg, #13222e 0%, var(--card-bg) 100%);
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 6px;
+    }
+    .team-name { font-size: 17px; font-weight: 800; color: #fff; }
+    .match-meta { font-size: 12px; color: var(--muted); margin-bottom: 12px; display: flex; gap: 8px; }
+    .badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+    .badge-play { background: #064e3b; color: #34d399; border: 1px solid #059669; }
+    .badge-pass { background: #1e293b; color: #94a3b8; }
+    .badge-eliminated { background: #450a0a; color: #f87171; border: 1px solid #991b1b; }
+    .sim-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin: 12px 0;
+    }
+    .sim-box {
+      background: #0d1520;
+      border: 1px solid #1a2736;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+    }
+    .sim-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 600; }
+    .sim-val { font-size: 15px; font-weight: 800; color: #fff; margin-top: 2px; }
+    .sim-edge { color: #34d399; }
+    .reason-box {
+      font-size: 12px;
+      color: #94a3b8;
+      background: #090e17;
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 10px;
+      border-left: 3px solid #059669;
+    }
+    .scores-strip {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 6px 0;
+      margin: 8px 0;
+    }
+    .score-pill {
+      background: #0f1a26;
+      border: 1px solid #1e2d3d;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      color: #cbd5e1;
+    }
+    .t45-footer {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px dashed var(--card-border);
+      padding-top: 8px;
+      margin-top: 12px;
+    }
+    footer { text-align: center; font-size: 11px; color: var(--muted); padding: 24px 0 16px 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <div class="brand-title">ERHAN · MAÇ ANALİZİ</div>
+      <div class="brand-sub">Anayasa v2 · 100.000 Monte Carlo Denetimli</div>
+    </div>
+    <div class="bankroll-chip">800 TL</div>
+  </header>
+
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-label">Korunan Kasa</div>
+      <div class="kpi-value">500 TL</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Serbest Kâr</div>
+      <div class="kpi-value" style="color:#34d399;">+300 TL</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Son Bahis</div>
+      <div class="kpi-value" style="color:#34d399;">Nets ✓</div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div class="section-title">Günün Çekirdek Seçimi (A-)</div>
+    <div class="section-tag">1 Maç Filtreyi Geçti</div>
+  </div>
+
+  <div class="card card-highlight">
+    <div class="card-header">
+      <div class="team-name">Cruzeiro vs São Paulo</div>
+      <span class="badge badge-play">OYNANABİLİR (A-)</span>
+    </div>
+    <div class="match-meta">
+      <span>🏟 Estádio Mineirão</span>
+      <span>⏰ TSİ 23:30</span>
+      <span>🇧🇷 Série A</span>
+    </div>
+
+    <div class="sim-grid">
+      <div class="sim-box">
+        <div class="sim-lbl">Model (1X2: 1)</div>
+        <div class="sim-val">%58.9</div>
+      </div>
+      <div class="sim-box">
+        <div class="sim-lbl">Global Oran</div>
+        <div class="sim-val">1.84</div>
+      </div>
+      <div class="sim-box">
+        <div class="sim-lbl">Net Avantaj</div>
+        <div class="sim-val sim-edge">+%4.5</div>
+      </div>
+    </div>
+
+    <div style="font-size:11px; color:var(--muted); margin-bottom:4px;">100.000 Simülasyonda En Olası Skorlar:</div>
+    <div class="scores-strip">
+      <div class="score-pill">1-0 (%13.1)</div>
+      <div class="score-pill">2-0 (%11.4)</div>
+      <div class="score-pill">1-1 (%11.1)</div>
+      <div class="score-pill">2-1 (%9.9)</div>
+      <div class="score-pill">0-0 (%7.6)</div>
+    </div>
+
+    <div class="reason-box">
+      <b>Taktik Gerekçe:</b> Cruzeiro Mineirão'da son 6 maçta namağlup (2.0 GF). São Paulo deplasmanda lig 15.si ve son 5 maçta sadece 3 gol atabildi. Omurgada yeni eksikler (desfalques) mevcut.<br>
+      <b>Önerilen Giriş:</b> 150 TL (Kazanırsa: 276 TL | Net Kâr: +126 TL).
+    </div>
+
+    <div class="t45-footer">
+      <span>T-45 Hedefi: 22:45 TSİ</span>
+      <span>Resmi 11 Kontrolü: 22:30 TSİ</span>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div class="section-title">Elenen Favoriler & Tuzaklar (PAS)</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="team-name">Sanfrecce Hiroshima – Iwaki FC</div>
+      <span class="badge badge-eliminated">Elenen Favori</span>
+    </div>
+    <div class="match-meta"><span>⏰ TSİ 12:30</span><span>🏆 İmparatorluk Kupası</span></div>
+    <div class="sim-grid">
+      <div class="sim-box"><div class="sim-lbl">Model</div><div class="sim-val">%65.3</div></div>
+      <div class="sim-box"><div class="sim-lbl">Global Oran</div><div class="sim-val">1.25</div></div>
+      <div class="sim-box"><div class="sim-lbl">Piyasa Farkı</div><div class="sim-val" style="color:var(--red);">-%14.7</div></div>
+    </div>
+    <div class="reason-box" style="border-left-color: var(--red);">
+      Sanfrecce kupa rotasyonunda. 1.25 oranı %80 isterken model %65.3 buluyor; negatif değerli sermaye tuzağı.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="team-name">Red Bull Bragantino – Mirassol</div>
+      <span class="badge badge-eliminated">Elenen Favori</span>
+    </div>
+    <div class="match-meta"><span>⏰ TSİ 23:30</span><span>🇧🇷 Série A</span></div>
+    <div class="sim-grid">
+      <div class="sim-box"><div class="sim-lbl">Model</div><div class="sim-val">%55.5</div></div>
+      <div class="sim-box"><div class="sim-lbl">Global Oran</div><div class="sim-val">1.70</div></div>
+      <div class="sim-box"><div class="sim-lbl">Piyasa Farkı</div><div class="sim-val" style="color:var(--red);">-%3.3</div></div>
+    </div>
+    <div class="reason-box" style="border-left-color: var(--red);">
+      Hakem Claus sertliği ve Mirassol'ün 5'li kompakt savunması. 1.70 piyasa fiyatı şişirilmiştir.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="team-name">IF Gnistan – FC Inter Turku</div>
+      <span class="badge badge-pass">PAS</span>
+    </div>
+    <div class="match-meta"><span>⏰ TSİ 20:00</span><span>🇫🇮 Veikkausliiga</span></div>
+    <div class="reason-box" style="border-left-color: var(--muted);">
+      Inter Turku'nun kazanma şansı %49.96 (yazı-tura). 1.82 piyasa oranı deplasmanda risk primi taşımıyor.
+    </div>
+  </div>
+
+  <footer>
+    Erhan Maç Analiz Sistemi · Çorlu, Tekirdağ
+  </footer>
+</body>
+</html>
